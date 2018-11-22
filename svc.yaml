@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: test-svc
+  namespace: voltron
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: test
+    deploymentconfig: test
+    name: test
+  type: LoadBalancer

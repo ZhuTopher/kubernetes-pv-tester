@@ -1,0 +1,47 @@
+kind: "DeploymentConfig"
+apiVersion: "v1"
+metadata:
+  name: "test"
+  namespace: voltron
+spec:
+  template: 
+    metadata:
+      labels:
+        app: "test"
+        deploymentconfig: "test"
+        name: "test"
+    spec:
+      containers:
+        - name: "test"
+          image: "test"
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: "test-pv"
+              mountPath: "/res"
+              subPath: "subpath-test"
+      volumes:
+        - name: "test-pv"
+          persistentVolumeClaim:
+            claimName: "test-pvc"
+      serviceAccount: "useroot"
+      serviceAccountName: "useroot"
+  replicas: 1
+  selector:
+    app: "test"
+    deploymentconfig: "test"
+    name: "test"
+  triggers:
+    - type: "ConfigChange"
+    - type: "ImageChange"
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - "test"
+        from:
+          kind: "ImageStreamTag"
+          name: "test:latest"
+          namespace: "voltron"
+  strategy: 
+    type: "Rolling"
